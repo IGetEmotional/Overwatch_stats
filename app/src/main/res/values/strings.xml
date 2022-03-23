@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Commerce_app</string>
+    <string name="button_name">Get Stats</string>
+    <string name="support">Support</string>
+    <string name="tank">Tank</string>
+    <string name="damage">Damage</string>
 </resources>

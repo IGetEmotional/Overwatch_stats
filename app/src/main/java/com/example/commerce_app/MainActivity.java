@@ -3,14 +3,20 @@ package com.example.commerce_app;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,12 +28,24 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends AppCompatActivity {
     private EditText user_field;
-    private TextView textView;
     private Button button;
-    private String answer;
+    //profile
+    private ImageView avatar;
+    private TextView name;
+    private ImageView level_stars;
+    //support
+    private TextView textView;
+    private ImageView supportRankImage;
+    //tank
+    private TextView tank_stat;
+    private ImageView tankRankImage;
+    //damage
+    private TextView damage_stat;
+    private ImageView damageRankImage;
 
 
 
@@ -37,7 +55,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         user_field = findViewById(R.id.editText);
         button = findViewById(R.id.button);
+        //support
         textView = findViewById(R.id.textView);
+        supportRankImage = findViewById(R.id.imageSupportRank);
+        //profile
+        avatar = findViewById(R.id.avatar);
+        name = findViewById(R.id.name);
+        level_stars = findViewById(R.id.level_stars);
+        //tank
+        tankRankImage = findViewById(R.id.imageTankRank);
+        tank_stat = findViewById(R.id.tank_stat);
+        //damage
+        damageRankImage = findViewById(R.id.imageDamageRank);
+        damage_stat = findViewById(R.id.damage_stat);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
                     String battleTag = user_field.getText().toString();
-                    String url = "https://best-overwatch-api.herokuapp.com/player/pc/eu/"+battleTag;
+                    String url = "https://owapi.io/profile/pc/eu/"+battleTag;
 
                     new GetUrlData().execute(url);
                 }
@@ -109,8 +139,19 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 JSONObject obj = new JSONObject(result);
-               // answer = obj.getString("username");
-                textView.setText(obj.getString("username"));
+                //avatar
+                Picasso.get().load(obj.getString("portrait")).into(avatar);
+                name.setText(obj.getString("username"));
+                Picasso.get().load(obj.getString("star")).into(level_stars);
+                //support
+                textView.setText(obj.getJSONObject("competitive").getJSONObject("support").getString("rank"));
+                Picasso.get().load(obj.getJSONObject("competitive").getJSONObject("support").getString("rank_img")).into(supportRankImage);
+                //tank
+                tank_stat.setText(obj.getJSONObject("competitive").getJSONObject("tank").getString("rank"));
+                Picasso.get().load(obj.getJSONObject("competitive").getJSONObject("tank").getString("rank_img")).into(tankRankImage);
+                //damage
+                damage_stat.setText(obj.getJSONObject("competitive").getJSONObject("damage").getString("rank"));
+                Picasso.get().load(obj.getJSONObject("competitive").getJSONObject("damage").getString("rank_img")).into(damageRankImage);
 
             } catch (JSONException e) {
                 e.printStackTrace();
